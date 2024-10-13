@@ -1,26 +1,39 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // /server/utils/context.ts
 
-import { getSession } from "next-auth/react"; // Import the session handler
+// import { getSession } from "next-auth/react";
+import { getToken } from "next-auth/jwt";
 import { inferAsyncReturnType } from "@trpc/server";
 import connectToDatabase from "./config/mongoose";
 import mongoose from "mongoose";
 
-export const createContext = async ({ req }: { req: Request }) => {
-  // Convert the Request object to a compatible type for getSession
-  const compatibleReq = {
-    headers: req.headers as any,
+// Define the type for the incoming request
+interface CreateContextOptions {
+  req: Request;
+}
+
+export const createContext = async ({ req }: CreateContextOptions) => {
+  // Convert the Request object to a compatible type for NextAuth functions
+  const compatibleReq: any = {
+    headers: Object.fromEntries(req.headers),
     method: req.method,
     url: req.url,
-    body: req.body,
+    // Note: body is typically not needed for session/token retrieval
   };
-  // Get the user session from the request
-  const session = await getSession({ req: compatibleReq });
-  await connectToDatabase(); 
-  
+
+  // // Get the user session from the request
+  // const session = await getSession({ req: compatibleReq });
+
+  // Use getToken to retrieve the JWT token
+  const token = await getToken({ req: compatibleReq });
+
+  // Connect to the database
+  await connectToDatabase();
+
   return {
-    user: session?.user || null,
-    db:mongoose.connection
+    user: token?.user || null, // Session user or null
+    token: token || null,        // JWT token or null
+    db: mongoose.connection,     // Database connection
   };
 };
 

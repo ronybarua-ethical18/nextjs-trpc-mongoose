@@ -13,9 +13,10 @@ export default function UserList(): React.ReactNode {
 
   return (
     <div>
+      <h1 className="text-2xl mb-5">You are viewing the data of <span className="font-normal">{data?.loggedUser?.name}</span></h1>
       <ul>
-        {data?.map((user: any) => (
-          <li key={user._id.toString()}>{user.name}</li>
+        {data?.users?.map((user: any) => (
+          <li className="text-xl text-center font-light" key={user._id.toString()}>User: {user.name}</li>
         ))}
       </ul>
     </div>
