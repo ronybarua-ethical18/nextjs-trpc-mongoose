@@ -1,10 +1,9 @@
-// app/signin/page.tsx
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; 
 import { useEffect, useState } from "react";
 import QuestionariesModal from "@/components/QuestionariesModal";
 
@@ -12,7 +11,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { data: session } = useSession();
-  const router = userRouter();
+  const router = useRouter(); // Use useRouter correctly
 
   console.log("logged user", session);
   const handleSubmit = async (e: React.FormEvent) => {
