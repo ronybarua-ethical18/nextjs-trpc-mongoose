@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import {
   Select,
   SelectContent,
@@ -8,41 +6,70 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Control, Controller } from "react-hook-form";
 
 type Option = {
   title: string;
   value: string;
 };
 
-type FormInputProps = {
+export interface FormInputProps {
+  name: string;
+  type: "text" | "email" | "password" | "select";
   placeholder?: string;
   options?: Option[];
-  role: string;
-  setRole: (value: string) => void;
-};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: Control<any>;
+  required?: boolean;
+}
 export function FormInput({
-  placeholder = "Select a Role",
-  options = [
-    { title: "Auditor", value: "auditor" },
-    { title: "Customer", value: "customer" },
-  ],
-  role,
-  setRole,
+  name,
+  placeholder,
+  type = "text",
+  options = [],
+  control,
+  required = false,
 }: FormInputProps) {
+  if (type === "select") {
+    return (
+      <Controller
+        name={name}
+        control={control}
+        rules={{ required }}
+        render={({ field }) => (
+          <Select value={field.value} onValueChange={field.onChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {options.map((option, i) => (
+                  <SelectItem key={i} value={option.value}>
+                    {option.title}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
+      />
+    );
+  }
+
   return (
-    <Select value={role} onValueChange={(value) => setRole(value)}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {options?.map((option, i) => (
-            <SelectItem key={i} value={option.value}>
-              {option.title}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <Controller
+      name={name}
+      control={control}
+      rules={{ required }}
+      render={({ field }) => (
+        <input
+          {...field}
+          type={type}
+          placeholder={placeholder}
+          className="w-full p-2 border border-gray-300 rounded"
+          required={required}
+        />
+      )}
+    />
   );
 }
