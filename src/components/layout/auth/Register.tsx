@@ -7,7 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import Image from "next/image";
 import frame from "../../../../public/images/on-board/Frame.svg";
-import frame1 from "../../../../public/images/on-board/Frame (1).svg"
+import frame1 from "../../../../public/images/on-board/Frame (1).svg";
 import frame2 from "../../../../public/images/on-board/Frame (2).svg";
 import frame3 from "../../../../public/images/on-board/Frame (3).svg";
 import frame4 from "../../../../public/images/on-board/Frame (4).svg";
@@ -15,7 +15,6 @@ import frame5 from "../../../../public/images/on-board/Frame (5).svg";
 import frame6 from "../../../../public/images/on-board/Frame (6).svg";
 
 import { cn } from "@/lib/utils";
-
 
 // Define the shape of each question
 type Question = {
@@ -29,7 +28,7 @@ type Step = {
   description?: string;
   questions?: Question[];
   isFinalStep?: boolean;
-  icon?: string   | undefined ;
+  icon?: string | undefined;
 };
 
 // Define the structure for form values (all keys will map to boolean values)
@@ -152,7 +151,7 @@ export default function Register() {
         acc[q.key] = false; // Initialize all questions with `false` values
       });
       return acc;
-    }, {} as FormValues), // Assert type of accumulator
+    }, {} as FormValues),
   });
 
   // Handle form submission
@@ -165,85 +164,121 @@ export default function Register() {
   };
 
   return (
-    <div className="space-y-6 flex w-[560px] p-6 flex-col items-center gap-6 rounded-lg border border-gray-200 bg-white shadow-[0_2px_4px_0_rgba(0,0,0,0.08),0_3px_10px_0_rgba(0,0,0,0.10)]" >
+    <div className="space-y-6 flex w-[560px] p-6 flex-col items-center gap-6 rounded-lg border border-gray-200 bg-white shadow-[0_2px_4px_0_rgba(0,0,0,0.08),0_3px_10px_0_rgba(0,0,0,0.10)]">
       {/* Tabs for navigation */}
-      <div className="w-full"><Tabs
-        value={currentStepIndex.toString()}
-        onValueChange={(value) => setCurrentStepIndex(Number(value))}
-      >
-        <TabsList className="hidden w-full">
-          {stepsConfig.map((step, index) => (
-            <TabsTrigger key={index} value={index.toString()}>
-              {step.title}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {stepsConfig.map((step, index) => (
-          <TabsContent key={index} value={index.toString()} className="w-full">
-            {/* Step title and description */}
-
-            <div className="flex flex-col items-center justify-center space-y-1">
-            <Image src={step.icon ?? "/images/default-icon.svg"} alt="image" height={30} width={30} />
-
-              <h2 className="text-[var(--700,#18181B)] font-inter text-[24px] font-bold leading-normal py-[12px]">{step.title}</h2>
-              {step.description && (
-                <p className="text-gray-600 text-center py-[12px] text-[var(--500,#71717A)] font-inter text-[12px] font-medium leading-normal">{step.description}</p>
-              )}
-            </div>
-
-
-            {/* Render questions if present */}
-            {step.questions?.map((q) => (
-            <label key={q.key} className="flex flex-col justify-center items-center p-4 gap-4 self-stretch rounded-md border border-gray-300 my-2">
-            <span className="self-stretch text-black text-center font-inter text-sm font-normal leading-[150%]">{q.question}</span>
-          </label>
-          
+      <div className="w-full">
+        <Tabs
+          value={currentStepIndex.toString()}
+          onValueChange={(value) => setCurrentStepIndex(Number(value))}
+        >
+          <TabsList className="hidden w-full">
+            {stepsConfig.map((step, index) => (
+              <TabsTrigger key={index} value={index.toString()}>
+                {step.title}
+              </TabsTrigger>
             ))}
+          </TabsList>
 
-            {/* Render inputs for final step (signup) */}
-            {step.isFinalStep && (
-              <div className="space-y-4">
-                <Input
-                  type="text"
-                  {...register("name")}
-                  placeholder="Name"
-                  className="w-full"
+          {stepsConfig.map((step, index) => (
+            <TabsContent key={index} value={index.toString()} className="w-full">
+              {/* Step title and description */}
+              <div className="flex flex-col items-center justify-center space-y-1">
+                <Image
+                  src={step.icon ?? "/images/default-icon.svg"}
+                  alt="image"
+                  height={30}
+                  width={30}
                 />
-                <Input
-                  type="text"
-                  {...register("phone")}
-                  placeholder="Phone"
-                  className="w-full"
-                />
-                <Input
-                  type="text"
-                  {...register("email")}
-                  placeholder="Email"
-                  className="w-full"
-                />
+                <h2 className="text-[var(--700,#18181B)] font-inter text-[24px] font-bold leading-normal py-[12px]">
+                  {step.title}
+                </h2>
+                {step.description && (
+                  <p className="text-gray-600 text-center py-[12px] text-[var(--500,#71717A)] font-inter text-[12px] font-medium leading-normal">
+                    {step.description}
+                  </p>
+                )}
               </div>
-            )}
 
-            {/* Navigation buttons */}
-            <div className={cn("flex space-x-2 w-full justify-between", currentStepIndex == 0 && "justify-end")}>
-              {(
-                <Button className={cn("hidden",currentStepIndex > 0 && "block",)}
-                  type="button"
-                  variant="white"
-                  onClick={() => setCurrentStepIndex((prev) => prev - 1)}
+              {/* Render clickable questions */}
+              {step.questions?.map((q) => (
+                <label
+                  key={q.key}
+                  onClick={() => setCurrentStepIndex((prev) => prev + 1)}
+                  className="flex flex-col justify-center items-center p-4 gap-4 self-stretch rounded-md border border-gray-300 my-2 cursor-pointer hover:bg-gray-100 transition-colors"
                 >
-                  Previous
-                </Button>
+                  <span className="self-stretch text-black text-center font-inter text-sm font-normal leading-[150%]">
+                    {q.question}
+                  </span>
+                </label>
+              ))}
+
+              {/* Render inputs for final step (signup) */}
+              {step.isFinalStep && (
+                <div className="space-y-4">
+                  <Input
+                    type="text"
+                    {...register("name")}
+                    placeholder="Name"
+                    className="w-full"
+                  />
+                  <Input
+                    type="text"
+                    {...register("phone")}
+                    placeholder="Phone"
+                    className="w-full"
+                  />
+                  <Input
+                    type="text"
+                    {...register("email")}
+                    placeholder="Email"
+                    className="w-full"
+                  />
+                </div>
               )}
 
-              <Button type="submit"  variant="purple" onClick={handleSubmit(onSubmit)}>
-                {step.isFinalStep ? "Submit" : "Next"}
-              </Button>
-            </div>
-          </TabsContent>
-        ))}
-      </Tabs></div>
+             {/* Navigation buttons */}
+<div
+  className={cn(
+    "flex space-x-2 w-full justify-between",
+    currentStepIndex == 0 && "justify-end"
+  )}
+>
+  {/* Show 'Previous' button if not on the first step */}
+  <Button
+    className={cn("hidden", currentStepIndex > 0 && "block")}
+    type="button"
+    variant="white"
+    onClick={() => setCurrentStepIndex((prev) => prev - 1)}
+  >
+    Previous
+  </Button>
+
+  {/* Show 'Next' button if not the last step */}
+  {currentStepIndex < stepsConfig.length - 1 && (
+    <Button
+      type="submit"
+      variant="purple"
+      onClick={handleSubmit(onSubmit)}
+    >
+      Next
+    </Button>
+  )}
+
+  {/* Submit button only on the last step */}
+  {currentStepIndex === stepsConfig.length - 1 && (
+    <Button
+      type="submit"
+      variant="purple"
+      onClick={handleSubmit(onSubmit)}
+    >
+      Continue
+    </Button>
+  )}
+</div>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
     </div>
   );
 }
