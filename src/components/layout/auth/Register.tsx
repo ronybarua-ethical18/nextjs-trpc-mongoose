@@ -11,7 +11,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { data: session } = useSession();
-  const router = useRouter(); // Use useRouter correctly
+  const router = useRouter(); 
 
   console.log("logged user", session);
   const handleSubmit = async (e: React.FormEvent) => {

@@ -128,7 +128,7 @@ const stepsConfig: Step[] = [
       {
         question: "Sold a residential property or holiday home with a loss",
         key: "fery_toll",
-      }
+      },
     ],
     icon: frame3,
   },
@@ -197,7 +197,7 @@ export default function QuestionariesModal() {
           <FaQuestion />{" "}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[560px]"> {/* Updated max width */}
+      <DialogContent className="sm:max-w-[560px] w-full p-4"> {/* Updated max width and added padding */}
         <div className="w-full">
           <Tabs
             value={currentStepIndex.toString()}
@@ -218,14 +218,14 @@ export default function QuestionariesModal() {
                 className="w-full"
               >
                 {/* Step title and description */}
-                <div className="flex flex-col items-center justify-center space-y-1">
+                <div className="flex flex-col items-center justify-center space-y-2">
                   <Image
                     src={step.icon ?? "/images/default-icon.svg"}
                     alt="image"
                     height={30}
                     width={30}
                   />
-                  <h2 className="text-[var(--700,#18181B)] font-inter text-[24px] font-bold leading-normal py-[12px]">
+                  <h2 className="text-[var(--700,#18181B)] font-inter text-[20px] md:text-[24px] font-bold leading-normal py-[12px]">
                     {step.title}
                   </h2>
                   {step.description && (
@@ -235,7 +235,7 @@ export default function QuestionariesModal() {
                   )}
                 </div>
 
-                {/* Render clickable questions */}
+              {/* Render clickable questions */}
                 {step.questions?.map((q) => (
                   <label
                     key={q.key}
@@ -249,20 +249,26 @@ export default function QuestionariesModal() {
                     )}
                     style={{
                       display: "flex",
-                      padding: "16px 8px",
+                      padding: "12px", // Reduced padding for smaller screens
                       flexDirection: "column",
                       justifyContent: "center",
                       alignItems: "center",
-                      gap: "8px", // Set gap between contents to 8px
+                      gap: "8px",
                       alignSelf: "stretch",
-                      marginBottom: "8px", // Added margin bottom for spacing between labels
+                      marginBottom: "8px",
                     }}
                   >
-                    <span className="self-stretch text-black text-center font-inter text-sm font-normal leading-[150%]">
+                    <span
+                      className={cn(
+                        "self-stretch text-center font-inter text-sm font-normal leading-[150%]",
+                        selectedQuestions[q.key] ? "text-[var(--violet,#5B52F9)]" : "text-black"
+                      )}
+                    >
                       {q.question}
                     </span>
                   </label>
                 ))}
+
 
                 {/* Navigation buttons */}
                 <div
