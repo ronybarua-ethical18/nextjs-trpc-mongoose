@@ -5,21 +5,22 @@ import { IUser } from "../interfaces/user";
 
 const UserSchema: Schema = new Schema<IUser>(
   {
-    name: { type: String, required: true },
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: {
       type: String,
-      enum: ["admin", "auditor", "client"],
+      enum: ["admin", "auditor", "customer"],
       required: true,
     },
     questionnaires: [
       {
-        category: { type: String, required: true }, // E.g., 'Work and Education'
+        category: { type: String, required: true }, 
         questions: [
           {
-            questionText: { type: String, required: true }, // E.g., 'Moved for a new job'
-            isSelected: { type: Boolean, default: false }, // If the question is selected
+            questionText: { type: String, required: true }, 
+            isSelected: { type: Boolean, default: false },  
           },
         ],
       },

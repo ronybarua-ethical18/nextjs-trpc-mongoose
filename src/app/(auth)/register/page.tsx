@@ -1,7 +1,6 @@
 "use client";
 
 import Register from "@/components/layout/auth/Register";
-import QuestionariesModal from "@/components/QuestionariesModal";
 import React from "react";
 // import { useSession } from "next-auth/react";
 
@@ -20,7 +19,6 @@ const ProtectedPage = () => {
 
   return (
     <>
-
       <div className="flex justify-center items-center border h-[100vh]">
         {/* Congrats {loggedInUser}, Good Evening! */}
         <Register />
