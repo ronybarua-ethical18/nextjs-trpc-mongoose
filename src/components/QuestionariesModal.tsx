@@ -92,7 +92,7 @@ const stepsConfig: Step[] = [
       },
       {
         question: "I work as a seafarer",
-        key: "lived_in_norway",
+        key: "lived_in_norwa",
       },
       {
         question:
@@ -102,11 +102,11 @@ const stepsConfig: Step[] = [
       {
         question:
           "Have expenses for road toll or ferry when travelling between your home and workplace",
-        key: "lived_in_norway",
+        key: "lived_in_nrway",
       },
       {
         question: "I stay away from home overnight because of work",
-        key: "lived_in_norway",
+        key: "overnight",
       },
     ],
     icon: frame2,
@@ -119,16 +119,16 @@ const stepsConfig: Step[] = [
       {
         question:
           "Housing in a housing association, housing company or jointly owned property",
-        key: "ferry_toll",
+        key: "ferry_tol",
       },
       {
         question: "I have rented out a residential property or a holiday home",
-        key: "ferry_toll",
+        key: "ferry_tll",
       },
       {
         question: "Sold a residential property or holiday home with a loss",
-        key: "ferry_toll",
-      },
+        key: "fery_toll",
+      }
     ],
     icon: frame3,
   },
@@ -149,15 +149,15 @@ const stepsConfig: Step[] = [
     description:
       "This info allows Keeper to suggest tax savings. Select all that apply.",
     questions: [
-      { question: "I have a sole proprietorship", key: "received_bonus" },
+      { question: "I have a sole proprietorship", key: "receive_bonus" },
       {
         question:
           "Sell goods or services, blog/influencer, practise e-sports (gaming), breed animals, or rent out property on a small scale.",
-        key: "received_bonus",
+        key: "receved_bonus",
       },
       {
         question: "I have received salary from odd jobs and services",
-        key: "received_bonus",
+        key: "reeived_bonus",
       },
     ],
     icon: frame5,
@@ -197,7 +197,7 @@ export default function QuestionariesModal() {
           <FaQuestion />{" "}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[560px]"> {/* Updated max width */}
         <div className="w-full">
           <Tabs
             value={currentStepIndex.toString()}
@@ -235,7 +235,7 @@ export default function QuestionariesModal() {
                   )}
                 </div>
 
-               {/* Render clickable questions */}
+                {/* Render clickable questions */}
                 {step.questions?.map((q) => (
                   <label
                     key={q.key}
@@ -263,7 +263,6 @@ export default function QuestionariesModal() {
                     </span>
                   </label>
                 ))}
-
 
                 {/* Navigation buttons */}
                 <div
@@ -297,7 +296,7 @@ export default function QuestionariesModal() {
                   {currentStepIndex === stepsConfig.length - 1 && (
                     <Button
                       type="button"
-                      variant="default"
+                      variant="purple"
                       onClick={() => alert("Completed!")}
                     >
                       Complete
