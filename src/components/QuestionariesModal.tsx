@@ -1,18 +1,12 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import frame from "../../public/images/on-board/Frame.svg";
@@ -22,7 +16,6 @@ import frame3 from "../../public/images/on-board/Frame (3).svg";
 import frame4 from "../../public/images/on-board/Frame (4).svg";
 import frame5 from "../../public/images/on-board/Frame (5).svg";
 import frame6 from "../../public/images/on-board/Frame (6).svg";
-
 import { cn } from "@/lib/utils";
 import { FaQuestion } from "react-icons/fa";
 
@@ -40,9 +33,6 @@ type Step = {
   isFinalStep?: boolean;
   icon?: string | undefined;
 };
-
-// Define the structure for form values (all keys will map to boolean values)
-type FormValues = Record<string, boolean>;
 
 // Steps configuration with nine steps
 const stepsConfig: Step[] = [
@@ -83,7 +73,6 @@ const stepsConfig: Step[] = [
         question: "Have young people’s housing savings (BSU)",
         key: "trade_union",
       },
-
       {
         question: "I have sold shares or securities at a loss",
         key: "sold_shares",
@@ -126,7 +115,6 @@ const stepsConfig: Step[] = [
     title: "Housing and Property",
     description:
       "This info allows Keeper to suggest tax savings. Select all that apply.",
-
     questions: [
       {
         question:
@@ -142,7 +130,6 @@ const stepsConfig: Step[] = [
         key: "ferry_toll",
       },
     ],
-
     icon: frame3,
   },
   {
@@ -193,24 +180,14 @@ const stepsConfig: Step[] = [
 // Multi-step form component
 export default function QuestionariesModal() {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [selectedQuestions, setSelectedQuestions] = useState<Record<string, boolean>>({});
 
-  // Form handling with react-hook-form
-  const { register, handleSubmit, reset } = useForm<FormValues>({
-    defaultValues: stepsConfig.reduce<FormValues>((acc, step) => {
-      step.questions?.forEach((q) => {
-        acc[q.key] = false; // Initialize all questions with `false` values
-      });
-      return acc;
-    }, {} as FormValues),
-  });
-
-  // Handle form submission
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Form Data:", data);
-    reset(); // Reset form on submission
-    if (currentStepIndex < stepsConfig.length - 1) {
-      setCurrentStepIndex((prev) => prev + 1); // Move to the next step
-    }
+  // Handle question click (toggle selection)
+  const handleQuestionClick = (key: string) => {
+    setSelectedQuestions((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
   };
 
   return (
@@ -258,12 +235,28 @@ export default function QuestionariesModal() {
                   )}
                 </div>
 
-                {/* Render clickable questions */}
+               {/* Render clickable questions */}
                 {step.questions?.map((q) => (
                   <label
                     key={q.key}
-                    onClick={() => setCurrentStepIndex((prev) => prev + 1)}
-                    className="flex flex-col justify-center items-center p-4 gap-4 self-stretch rounded-md border border-gray-300 my-2 cursor-pointer hover:bg-gray-100 transition-colors"
+                    onClick={() => handleQuestionClick(q.key)}
+                    className={cn(
+                      "flex flex-col justify-center items-center cursor-pointer transition-colors",
+                      "rounded-[6px] border", // Added border and border-radius
+                      selectedQuestions[q.key]
+                        ? "border-[var(--violet,#5B52F9)] bg-[var(--violet-2,#F0EFFE)]"
+                        : "border-[var(--grey,#E4E4E7)] bg-white hover:bg-gray-100"
+                    )}
+                    style={{
+                      display: "flex",
+                      padding: "16px 8px",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "8px", // Set gap between contents to 8px
+                      alignSelf: "stretch",
+                      marginBottom: "8px", // Added margin bottom for spacing between labels
+                    }}
                   >
                     <span className="self-stretch text-black text-center font-inter text-sm font-normal leading-[150%]">
                       {q.question}
@@ -271,35 +264,12 @@ export default function QuestionariesModal() {
                   </label>
                 ))}
 
-                {/* Render inputs for final step (signup) */}
-                {step.isFinalStep && (
-                  <div className="space-y-4">
-                    <Input
-                      type="text"
-                      {...register("name")}
-                      placeholder="Name"
-                      className="w-full"
-                    />
-                    <Input
-                      type="text"
-                      {...register("phone")}
-                      placeholder="Phone"
-                      className="w-full"
-                    />
-                    <Input
-                      type="text"
-                      {...register("email")}
-                      placeholder="Email"
-                      className="w-full"
-                    />
-                  </div>
-                )}
 
                 {/* Navigation buttons */}
                 <div
                   className={cn(
                     "flex space-x-2 w-full justify-between",
-                    currentStepIndex == 0 && "justify-end"
+                    currentStepIndex === 0 && "justify-end"
                   )}
                 >
                   {/* Show 'Previous' button if not on the first step */}
@@ -315,22 +285,22 @@ export default function QuestionariesModal() {
                   {/* Show 'Next' button if not the last step */}
                   {currentStepIndex < stepsConfig.length - 1 && (
                     <Button
-                      type="submit"
+                      type="button"
                       variant="purple"
-                      onClick={handleSubmit(onSubmit)}
+                      onClick={() => setCurrentStepIndex((prev) => prev + 1)}
                     >
                       Next
                     </Button>
                   )}
 
-                  {/* Submit button only on the last step */}
+                  {/* Show 'Complete' button if it's the last step */}
                   {currentStepIndex === stepsConfig.length - 1 && (
                     <Button
-                      type="submit"
-                      variant="purple"
-                      onClick={handleSubmit(onSubmit)}
+                      type="button"
+                      variant="default"
+                      onClick={() => alert("Completed!")}
                     >
-                      Continue
+                      Complete
                     </Button>
                   )}
                 </div>
