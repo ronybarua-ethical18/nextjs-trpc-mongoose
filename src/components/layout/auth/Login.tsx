@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 // import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,24 @@ export default function Login() {
   console.log("logged user", session);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Implement custom login logic here (or via signIn with credentials)
+    // Sign in using next-auth credentials provider
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (result?.error) {
+      console.log("something went wrong with login");
+      toast.error(result?.error, {
+        duration: 4000, // Duration in milliseconds
+      });
+    } else {
+      // router.push('/dashboard'); // Redirect to dashboard or another page after successful login
+      toast.success("Login Successful", {
+        duration: 2000, // Duration in milliseconds
+      });
+    }
   };
 
   useEffect(() => {

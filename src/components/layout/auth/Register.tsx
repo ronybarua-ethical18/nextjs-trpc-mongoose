@@ -7,7 +7,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import QuestionariesModal from "@/components/QuestionariesModal";
 import { FormInput } from "@/components/FormInput";
- 
+import { trpc } from "@/utils/trpc"; // Adjust the import according to your project structure
+import toast from "react-hot-toast";
+
 type FormData = {
   firstName: string;
   lastName: string;
@@ -20,7 +22,7 @@ export default function Register() {
   const { data: session } = useSession();
   const router = useRouter();
   const { handleSubmit, control, reset } = useForm<FormData>();
-  const [error, setError] = useState<string | null>(null); // State to track errors
+  const [error, setError] = useState<string | null>(null); // State to track error
 
   useEffect(() => {
     if (session?.user) {
@@ -28,99 +30,91 @@ export default function Register() {
     }
   }, [router, session]);
 
-  const onSubmit = async (data: FormData) => {
-    console.log(data);
-    
-    setError(null); // Reset error state before submission
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data), // Send form data as JSON
+  const mutation = trpc.auth.signup.useMutation({
+    onSuccess: () => {
+
+      toast.success("Email verification link has been sent to your email please check", {
+        duration: 4000, // Duration in milliseconds
       });
 
-      if (response.ok) {
-        // If registration is successful, redirect or handle success
-        reset(); // Reset form after successful submission
-        router.push("/login"); // Redirect to login page after successful registration
-      } else {
-        // If an error occurs, get the error message
-        const result = await response.json();
-        setError(result.message || "Failed to register. Please try again.");
-      }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    }
+      reset(); // Reset form after successful submission
+      // router.push("/login"); // Redirect to login page after successful registration
+    },
+    onError: (error) => {
+      setError(error.message || "Failed to register. Please try again.");
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    setError(null); // Reset error state before submission
+    mutation.mutate(data); // Call the tRPC mutation
   };
 
   return (
-    <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-      <QuestionariesModal />
+    <div className="flex items-center justify-center h-screen ">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <QuestionariesModal />
+        <h2 className="text-2xl font-bold text-center">Sign Up</h2>
+        {error && <p className="text-red-500">{error}</p>}{" "}
+        {/* Display error message */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="flex space-x-2">
+            {/* First Name */}
+            <FormInput
+              name="firstName"
+              control={control}
+              type="text"
+              placeholder="First Name"
+              required
+            />
 
-      <h2 className="text-2xl font-bold text-center">Sign Up</h2>
+            {/* Last Name */}
+            <FormInput
+              name="lastName"
+              control={control}
+              type="text"
+              placeholder="Last Name"
+              required
+            />
+          </div>
 
-      {error && <p className="text-red-500">{error}</p>} {/* Display error message */}
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="flex space-x-2">
-          {/* First Name */}
+          {/* Email */}
           <FormInput
-            name="firstName"
+            name="email"
             control={control}
-            type="text"
-            placeholder="First Name"
+            type="email"
+            placeholder="Email"
             required
           />
 
-          {/* Last Name */}
+          {/* Password */}
           <FormInput
-            name="lastName"
+            name="password"
             control={control}
-            type="text"
-            placeholder="Last Name"
+            type="password"
+            placeholder="Password"
             required
           />
-        </div>
 
-        {/* Email */}
-        <FormInput
-          name="email"
-          control={control}
-          type="email"
-          placeholder="Email"
-          required
-        />
+          {/* Role (Select) */}
+          <FormInput
+            name="role"
+            control={control}
+            type="select"
+            placeholder="Select Role"
+            options={[
+              { title: "Auditor", value: "auditor" },
+              { title: "Customer", value: "customer" },
+            ]}
+            required
+          />
 
-        {/* Password */}
-        <FormInput
-          name="password"
-          control={control}
-          type="password"
-          placeholder="Password"
-          required
-        />
-
-        {/* Role (Select) */}
-        <FormInput
-          name="role"
-          control={control}
-          type="select"
-          placeholder="Select Role"
-          options={[
-            { title: "Auditor", value: "auditor" },
-            { title: "Customer", value: "customer" },
-          ]}
-          required
-        />
-
-        {/* Submit Button */}
-        <Button type="submit" className="w-full text-white">
-          Sign Up
-        </Button>
-      </form>
+          {/* Submit Button */}
+          <Button type="submit" className="w-full text-white">
+            Sign Up
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
