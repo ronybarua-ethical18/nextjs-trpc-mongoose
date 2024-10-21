@@ -1,10 +1,11 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { AuthOptions, Session } from "next-auth";
 import { Account, User as AuthUser, Profile } from "next-auth";
 import bcrypt from "bcrypt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import connectToDatabase from "@/server/config/mongoose";
 import User from "@/server/db/models/user";
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface User {
@@ -79,13 +80,19 @@ export const authOptions: AuthOptions = {
     }): Promise<boolean> {
       if (account?.provider === "google") {
         await connectToDatabase();
+
+        console.log("google account user", user);
         try {
           const existingUser = await User.findOne({ email: user.email });
           if (!existingUser) {
             const newUser = new User({
               email: user.email,
-              name: user.name,
+              firstName: user.name,
+              lastName: user.name,
+              role: "customer",
               provider: "google",
+              image: user?.image || "",
+              isVerified: true,
             });
             await newUser.save();
           }
@@ -104,27 +111,30 @@ export const authOptions: AuthOptions = {
     },
     async jwt({ token, user }) {
       // Attach user information to the JWT token
-
-      console.log("user", user);
       if (user) {
         token.id = user.id;
         token.email = user.email;
-        token.firstName = user.firstName;
+        token.firstName = user.firstName || user.name;
         token.lastName = user.lastName;
-        token.role = user.role;
+        token.role = user.role || "customer";
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT;
+    }): Promise<Session> {
       // Attach user info to the session object
-      if (!session.user) {
-        session.user = {};
-      }
-      session.user = token.id;
-      session.role = token.role;
-      session.email = token.email;
-      session.firstName = token.firstName;
-      session.lastName = token.lastName;
+      session.user = {
+        id: token.id as string,
+        role: (token.role as string) || "customer",
+        email: token.email as string,
+        firstName: (token.firstName as string) || token.name || "",
+        lastName: (token.lastName as string) || "",
+      };
       return session;
     },
   },
