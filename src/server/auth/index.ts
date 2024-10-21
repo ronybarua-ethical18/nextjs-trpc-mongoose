@@ -1,9 +1,10 @@
-// src/server/trpc/auth.ts
-
 import { z } from "zod"; // Import Zod for validation
 import { publicProcedure, router } from "@/server/trpc";
 import User from "@/server/db/models/user";
 import bcrypt from "bcrypt";
+import sendEmail from "../services/mail/sendMail";
+import { VERIFY_EMAIL_TEMPLATE } from "../services/mail/constants";
+import jwt from "jsonwebtoken"; // Import JWT for token generation
 
 const signupSchema = z.object({
   email: z.string().email(), // Validate email format
@@ -40,10 +41,26 @@ export const authRouter = router({
 
       await newUser.save(); // Save user to the database
 
+      // Generate JWT token for email verification
+      const token = jwt.sign(
+        { id: newUser._id, email: newUser.email, role:newUser.role }, // Payload (user info)
+        process.env.JWT_SECRET as string, // JWT secret from env
+        { expiresIn: "1h" } // Token expiration
+      );
+
+      // Send verification email with the token
+      sendEmail(
+        [newUser.email],
+        { subject: "Email Verification", data: { firstName: newUser.firstName, token:`${process.env.CLIENT_URL}?token=${token}`,  } }, // Pass token to template context
+        VERIFY_EMAIL_TEMPLATE
+      );
+
       return {
-        message: "User registered successfully",
+        message: "User registered successfully, please verify your email.",
         status: 200,
         user: newUser,
+        token, // Send token if you want to use it on the client side immediately
       };
     }),
+  
 });
