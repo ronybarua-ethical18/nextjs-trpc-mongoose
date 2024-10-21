@@ -1,9 +1,9 @@
+// src/components/layout/auth/Register.tsx
 "use client";
-
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import QuestionariesModal from "@/components/QuestionariesModal";
 import { FormInput } from "@/components/FormInput";
@@ -20,15 +20,15 @@ type FormData = {
 
 export default function Register() {
   const { data: session } = useSession();
+  console.log(session);
+
   const router = useRouter();
   const { handleSubmit, control, reset } = useForm<FormData>();
   const [error, setError] = useState<string | null>(null); // State to track error
 
   useEffect(() => {
-    if (session?.user) {
-      router.push("/customer");
-    }
-  }, [router, session]);
+    if (session?.user) router.push("/customer");
+  }, [session, router]);
 
   const mutation = trpc.auth.signup.useMutation({
     onSuccess: () => {
