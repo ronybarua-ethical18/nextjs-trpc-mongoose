@@ -61,6 +61,7 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
   ],
+
   pages: {
     signIn: "/login",
   },
