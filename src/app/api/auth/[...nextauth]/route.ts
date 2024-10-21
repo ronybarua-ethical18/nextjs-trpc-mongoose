@@ -35,8 +35,6 @@ export const authOptions: AuthOptions = {
           throw new Error('Invalid credentials');
         }
 
-        console.log('credentials', credentials);
-
         await connectToDatabase();
         const user = await User.findOne({ email: credentials.email });
 
