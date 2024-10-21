@@ -92,7 +92,7 @@ export default function Login() {
             Sign In
           </Button>
         </form>
-        <div className="flex justify-between text-[#71717A] ">
+        <div className="flex justify-between text-[#71717A]">
           <div className="flex items-center space-x-2">
             <Checkbox id="remember" className=" " />
             <label htmlFor="remember" className="text-sm font-medium ">
