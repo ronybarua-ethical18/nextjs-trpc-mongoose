@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import QuestionariesModal from "@/components/QuestionariesModal";
+// import QuestionariesModal from "@/components/QuestionariesModal";
 import { FormInput } from "@/components/FormInput";
 import { trpc } from "@/utils/trpc"; // Adjust the import according to your project structure
 import toast from "react-hot-toast";
@@ -57,7 +57,7 @@ export default function Register() {
   return (
     <div className="flex items-center justify-center h-screen ">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md text-center">
-        <QuestionariesModal />
+        {/* <QuestionariesModal /> */}
         <h2 className="text-2xl font-bold text-center">Sign Up</h2>
         {error && <p className="text-red-500">{error}</p>}{" "}
         {/* Display error message */}
