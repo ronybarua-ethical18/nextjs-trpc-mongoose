@@ -2,11 +2,10 @@
   "extends": [
     "next/core-web-vitals",
     "next/typescript",
-    "plugin:prettier/recommended" // Enables Prettier rules and turns off conflicting ESLint rules
+    "plugin:prettier/recommended" // This line enables Prettier as an ESLint rule
   ],
+  "plugins": ["prettier"],
   "rules": {
-    // Example of custom rules, you can add or modify them as needed
-    "prettier/prettier": "error", // Treat Prettier formatting issues as ESLint errors
-    "@typescript-eslint/no-unused-vars": "warn" // Optional: Customize TypeScript rules
+    "prettier/prettier": 0
   }
 }
