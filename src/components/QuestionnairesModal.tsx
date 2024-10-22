@@ -74,7 +74,7 @@ export default function QuestionnairesModal({
               onClick={() => handleQuestionClick(q.question)}
               className={cn(
                 'cursor-pointer text-center transition-colors p-4 rounded-[6px] border',
-                selectedQuestions[q.key]
+                selectedQuestions[q.question]
                   ? 'border-[var(--violet,#5B52F9)] bg-[var(--violet-2,#F0EFFE)]'
                   : 'border-[var(--grey,#E4E4E7)] bg-white hover:bg-gray-100'
               )}
@@ -82,7 +82,7 @@ export default function QuestionnairesModal({
               <span
                 className={cn(
                   'self-stretch text-center font-inter text-sm font-normal leading-[150%]',
-                  selectedQuestions[q.key]
+                  selectedQuestions[q.question]
                     ? 'text-[var(--violet,#5B52F9)]'
                     : 'text-black'
                 )}
