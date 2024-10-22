@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod"; // Import Zod for validation
 import { publicProcedure, router } from "@/server/trpc";
 import User from "@/server/db/models/user";
@@ -43,7 +44,7 @@ export const authRouter = router({
 
       // Generate JWT token for email verification
       const token = jwt.sign(
-        { id: newUser._id, email: newUser.email, role:newUser.role }, // Payload (user info)
+        { id: newUser._id, email: newUser.email, role: newUser.role }, // Payload (user info)
         process.env.JWT_SECRET as string, // JWT secret from env
         { expiresIn: "1h" } // Token expiration
       );
@@ -51,7 +52,13 @@ export const authRouter = router({
       // Send verification email with the token
       sendEmail(
         [newUser.email],
-        { subject: "Email Verification", data: { firstName: newUser.firstName, token:`${process.env.CLIENT_URL}?token=${token}`,  } }, // Pass token to template context
+        {
+          subject: "Email Verification",
+          data: {
+            firstName: newUser.firstName,
+            token: `${process.env.CLIENT_URL}?token=${token}`,
+          },
+        }, // Pass token to template context
         VERIFY_EMAIL_TEMPLATE
       );
 
@@ -62,5 +69,46 @@ export const authRouter = router({
         token, // Send token if you want to use it on the client side immediately
       };
     }),
-  
+  verifyEmail: publicProcedure
+    .input(
+      z.object({
+        token: z.string(), // Expect a token as input
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { token } = input;
+
+      // Decode the token and extract user info
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+        id: string;
+      };
+
+      // Find the user by ID
+      const user = await User.findById(decoded.id);
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      // Check if the user is already verified
+      if (user.isVerified) {
+        return {
+          message: "User is already verified.",
+          alreadyVerified: true,
+          status: 200,
+        };
+      }
+
+      // Update the user's verification status
+      user.isVerified = true;
+      await user.save();
+
+      return {
+        message: "Email verified successfully.",
+        alreadyVerified: false,
+        status: 200,
+      };
+    }),
 });

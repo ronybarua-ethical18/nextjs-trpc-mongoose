@@ -1,29 +1,61 @@
 "use client";
 import Link from "next/link";
-import React from "react";
-import Logo from "../../../../public/images/company_logo.png"
+import React, { useEffect, useRef, useState } from "react";
+import Logo from "../../../../public/images/company_logo.png";
 import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
+import { toast } from "react-hot-toast"; // For toast notifications
+import { trpc } from "@/utils/trpc"; // Assuming trpc setup exists
 
 export default function VerifyPage() {
-  //const [searchParams] = useSearchParams();
-  //const token = searchParams.get("token");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
-  //const { isSuccess } = useSelector(authSelector);
+  const [isVerifying, setIsVerifying] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
+  const [alreadyVerified, setAlreadyVerified] = useState(false);
 
-  //const navigate = useNavigate();
-  // dispatch = useDispatch();
+  const toastShown = useRef(false); // Track if a toast has been triggered
 
-  // useEffect(() => {
-  //   dispatch(verifyEmail(token));
-  // }, [token]);
+  const { mutate: verifyEmail } = trpc.auth.verifyEmail.useMutation({
+    onSuccess: (data) => {
+      setIsVerifying(false);
 
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     setTimeout(() => {
-  //       navigate("/signin");
-  //     }, 3000);
-  //   }
-  // });
+      if (!toastShown.current) {
+        if (data.alreadyVerified) {
+          setAlreadyVerified(true);
+          toast.success("Your email was already verified.", { duration: 4000 });
+        } else {
+          setIsVerified(true);
+          toast.success("Email verified successfully!", { duration: 4000 });
+        }
+        toastShown.current = true; // Mark toast as shown
+      }
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 3000);
+    },
+    onError: (error) => {
+      setIsVerifying(false);
+      setIsVerified(false);
+
+      if (!toastShown.current) {
+        toast.error(error.message || "Verification failed. Please try again.");
+        toastShown.current = true; // Mark toast as shown
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (token) {
+      verifyEmail({ token });
+    } else {
+      setIsVerifying(false);
+    }
+  }, [token, verifyEmail]);
+
   return (
     <div
       style={{
@@ -43,75 +75,105 @@ export default function VerifyPage() {
           width: "100%",
         }}
       >
-        <tr>
-          <td align="center">
-            <Image src={Logo} height={50} width={200} alt="Fradragsjakt_logo" />
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td align="center">
+              <Image src={Logo} height={50} width={200} alt="Company Logo" />
+            </td>
+          </tr>
 
-        <tr>
-          <td align="center">
-            <div
-              style={{
-                maxWidth: "700px",
-                margin: "30px",
-                backgroundColor: "white",
-                padding: "30px",
-              }}
-            >
-              <h3
-                style={{
-                  color: "#333333",
-                  fontSize: "16px",
-                  fontWeight: "400",
-                  lineHeight: "34px",
-                }}
-              >
-                Thank you for your trust in
-                <span style={{ fontWeight: "600" }}> Fradragsjakt!</span>
-              </h3>
+          <tr>
+            <td align="center">
               <div
                 style={{
-                  textAlign: "center",
-                  color: "#5b6aff",
-                  margin: "30px 0px",
-                  lineHeight: "24px",
+                  maxWidth: "700px",
+                  margin: "30px",
+                  backgroundColor: "white",
+                  padding: "30px",
                 }}
               >
-                <h3 style={{ fontSize: "24px" }}>
-                  Your email has been verified successfully
-                </h3>
+                {isVerifying ? (
+                  <h3 style={{ color: "#333", fontSize: "18px" }}>
+                    Verifying your email, please wait...
+                  </h3>
+                ) : isVerified ? (
+                  <>
+                    <h3 style={{ fontWeight: 400, lineHeight: "34px" }}>
+                      Thank you for trusting{" "}
+                      <span style={{ fontWeight: 600 }}>Fradragsjakt!</span>
+                    </h3>
+                    <div style={{ color: "#5b6aff", margin: "30px 0px" }}>
+                      <h3 style={{ fontSize: "24px" }}>
+                        Your email has been verified successfully!
+                      </h3>
+                    </div>
+                    <Link href="/login">
+                      <button
+                        style={{
+                          height: "40px",
+                          width: "146px",
+                          backgroundColor: "#5b6aff",
+                          color: "white",
+                          margin: "30px 0",
+                          cursor: "pointer",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Log in
+                      </button>
+                    </Link>
+                  </>
+                ) : alreadyVerified ? (
+                  <>
+                    <h3 style={{ color: "#27ae60", fontSize: "24px" }}>
+                      Your email is already verified!
+                    </h3>
+                    <Link href="/login">
+                      <button
+                        style={{
+                          height: "40px",
+                          width: "146px",
+                          backgroundColor: "#5b6aff",
+                          color: "white",
+                          margin: "30px 0",
+                          cursor: "pointer",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Log in
+                      </button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <h3 style={{ color: "#e74c3c", fontSize: "24px" }}>
+                      Email verification failed!
+                    </h3>
+                    <p style={{ color: "#555", marginTop: "15px" }}>
+                      Please try again or contact support if the issue persists.
+                    </p>
+                    <Link href="/resend-verification">
+                      <button
+                        style={{
+                          height: "40px",
+                          width: "220px",
+                          backgroundColor: "#e74c3c",
+                          color: "white",
+                          margin: "30px 0",
+                          cursor: "pointer",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        Resend Verification Email
+                      </button>
+                    </Link>
+                  </>
+                )}
               </div>
-              <h4
-                style={{
-                  color: "#333333",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                }}
-              >
-                Let&apos;s grow your business together.
-              </h4>
-              <Link href="/login">
-                <button
-                  style={{
-                    height: "40px",
-                    width: "146px",
-                    backgroundColor: "#5b6aff",
-                    border: "1px solid #5b6aff",
-                    color: "white",
-                    margin: "30px 0",
-                    cursor: "pointer",
-                    borderRadius: "5px",
-                  }}
-                >
-                  Log in
-                </button>
-              </Link>
-            </div>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </tbody>
       </table>
-         
     </div>
   );
 }
