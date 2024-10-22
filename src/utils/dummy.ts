@@ -17,7 +17,9 @@ export const menuConfig = {
     { href: '/products', label: 'Products', icon: FcPackage },
   ],
   customer: [
-    { href: '/', label: 'Home', icon: HomeIcon },
-    { href: '/orders', label: 'My Orders', icon: FaShoppingCart },
+    { href: '/', label: 'Dashboard', icon: HomeIcon },
+    { href: '/expenses', label: 'Expenses', icon: FaShoppingCart },
+    { href: '/deductions', label: 'Deductions', icon: FaShoppingCart },
+    { href: '/tax-file', label: 'Tax File', icon: FaShoppingCart },
   ],
 };

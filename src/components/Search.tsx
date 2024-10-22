@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 // import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from '../ui/input';
+import { Input } from './ui/input';
 import { FaSearch } from 'react-icons/fa';
 
 export default function Search() {

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { FcPackage } from 'react-icons/fc';
 import { menuConfig } from '@/utils/dummy';
+import { UpgradeCard } from './UpgradedCard';
 
 // Define the type for a menu item
 type MenuItem = {
@@ -28,9 +28,10 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <FcPackage className="h-6 w-6" />
-            <span>Acme Inc</span>
+          <Link href="/" className="">
+            {/* <FcPackage className="h-6 w-6" /> */}
+            <h3 className="font-normal text-xl">Fradragsjakt</h3>
+            <h3>Welcome</h3>
           </Link>
         </div>
         <div className="flex-1">
@@ -38,11 +39,11 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
             {menuItems.map(({ href, label, icon: Icon, badge }) => (
               <Link
                 key={href}
-                href={href}
+                href={`/${role}${href}`}
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <Icon className="h-4 w-4" />
-                {label}
+                <span className="font-thin text-base">{label}</span>
                 {badge && (
                   <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                     {badge}
@@ -51,6 +52,10 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
               </Link>
             ))}
           </nav>
+        </div>
+        {/* Upgrade to Pro section */}
+        <div className="mt-auto p-4">
+          <UpgradeCard />
         </div>
       </div>
     </div>
