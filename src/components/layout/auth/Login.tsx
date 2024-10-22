@@ -1,41 +1,41 @@
 // app/signin/page.tsx
-"use client";
+'use client';
 
-import { signIn, useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { signIn, useSession } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 // import { useRouter } from 'next/navigation';
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { FcGoogle } from "react-icons/fc";
-import Link from "next/link";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { FcGoogle } from 'react-icons/fc';
+import Link from 'next/link';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { data: session } = useSession();
   const router = useRouter();
 
-  console.log("logged user", session);
+  console.log('logged user', session);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Sign in using next-auth credentials provider
-    const result = await signIn("credentials", {
+    const result = await signIn('credentials', {
       redirect: false,
       email,
       password,
     });
 
     if (result?.error) {
-      console.log("something went wrong with login");
+      console.log('something went wrong with login');
       toast.error(result?.error, {
         duration: 4000, // Duration in milliseconds
       });
     } else {
       // router.push('/dashboard'); // Redirect to dashboard or another page after successful login
-      toast.success("Login Successful", {
+      toast.success('Login Successful', {
         duration: 2000, // Duration in milliseconds
       });
     }
@@ -43,7 +43,7 @@ export default function Login() {
 
   useEffect(() => {
     if (session?.user) {
-      router.push("/customer");
+      router.push('/customer/dashboard');
     }
   }, [router, session]);
 
@@ -113,7 +113,7 @@ export default function Login() {
         {/* Google Sign In Button */}
         <Button
           variant="outline"
-          onClick={() => signIn("google")}
+          onClick={() => signIn('google')}
           className="w-full flex items-center justify-center"
         >
           <FcGoogle className="text-lg" />
@@ -122,7 +122,7 @@ export default function Login() {
           </span>
         </Button>
         <p className="text-sm text-[#71717A] font-medium">
-          Don’t have an account{" "}
+          Don’t have an account{' '}
           <Link href="/register" className="text-[#00104B]">
             Sign up
           </Link>
