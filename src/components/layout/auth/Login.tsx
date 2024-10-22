@@ -1,14 +1,14 @@
 // app/signin/page.tsx
-'use client';
-import { signIn, useSession } from 'next-auth/react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
-import { FcGoogle } from 'react-icons/fc';
-import Link from 'next/link';
-import { Checkbox } from '@/components/ui/checkbox';
+"use client";
+import { signIn, useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { FcGoogle } from "react-icons/fc";
+import Link from "next/link";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,7 +16,8 @@ export default function Login() {
   const { data: session } = useSession();
   const router = useRouter();
 
-  console.log('logged user', session);
+  console.log("logged user", session);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Sign in using next-auth credentials provider

@@ -12,10 +12,7 @@ export const questionnaires = [
     description:
       'This info allows Keeper to suggest tax savings. Select all that apply.',
     questions: [
-      {
-        question: 'Have children aged 11 years or younger',
-        key: 'children_under_11',
-      },
+      { question: 'Have children aged 11 years or younger', key: 'children_under_11' },
       {
         question: 'I have children aged 12 or older with special care needs',
         key: 'children_special_needs',
@@ -144,3 +141,4 @@ export const questionnaires = [
     icon: frame6,
   },
 ];
+
