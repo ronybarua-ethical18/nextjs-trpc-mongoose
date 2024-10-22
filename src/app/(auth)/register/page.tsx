@@ -1,7 +1,5 @@
-"use client";
-
-import Register from "@/components/layout/auth/Register";
-import React from "react";
+import Register from '@/components/layout/auth/Register';
+import React from 'react';
 
 const ProtectedPage = () => {
   return (

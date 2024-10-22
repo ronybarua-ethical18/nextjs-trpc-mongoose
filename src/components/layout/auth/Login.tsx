@@ -1,10 +1,8 @@
 // app/signin/page.tsx
 'use client';
-
 import { signIn, useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-// import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -19,6 +17,7 @@ export default function Login() {
   const router = useRouter();
 
   console.log('logged user', session);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Sign in using next-auth credentials provider
