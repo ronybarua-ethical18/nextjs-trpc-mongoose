@@ -17,7 +17,6 @@ export default function Login() {
   const router = useRouter();
 
   console.log('logged user', session);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Sign in using next-auth credentials provider
