@@ -1,20 +1,33 @@
-// import User from "@/server/db/models/user";
-import User from "@/server/db/models/user";
-import { protectedProcedure } from "@/server/middlewares/with-auth";
-import { router } from "@/server/trpc";
+import User from '@/server/db/models/user';
+import { protectedProcedure } from '@/server/middlewares/with-auth';
+import { router } from '@/server/trpc';
 
 export const userRouter = router({
-  getUsers: protectedProcedure
-    .query(async ({ ctx }) => {
-      const loggedUser = await ctx.user
-      const users = await User.find({})
-      return {
-        users,
-        loggedUser
-      };
-    }),
+  // Get all users and the logged-in user from the session
+  getUsers: protectedProcedure.query(async ({ ctx }) => {
+    const loggedUser = ctx.user; // Retrieve the logged-in user from context
+    const users = await User.find({}); // Fetch all users
+    console.log({ loggedUser, users });
 
-  
+    return {
+      users,
+      loggedUser,
+    };
+  }),
 
-  // Additional user booking-related procedures can be added here
+  getUserById: protectedProcedure.query(async ({ ctx }) => {
+    const sessionUser = ctx.user;
+
+    if (!sessionUser || !sessionUser.id) {
+      throw new Error('You must be logged in to access this data.');
+    }
+
+    const user = await User.findById(sessionUser.id);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user;
+  }),
 });

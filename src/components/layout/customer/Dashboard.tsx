@@ -2,8 +2,15 @@
 import React from 'react';
 import ProtectedLayout from '../ProtectedLayout';
 import QuestionnairesModal from '@/components/QuestionnairesModal';
+import { trpc } from '@/utils/trpc';
+import { useSession } from 'next-auth/react';
 
 function CustomerDashboard() {
+  const { data: user } = trpc.users.getUsers.useQuery();
+  console.log('logged user data', user);
+  const { data: session } = useSession();
+  console.log(session);
+
   return (
     <ProtectedLayout>
       <QuestionnairesModal isOpen={true} />

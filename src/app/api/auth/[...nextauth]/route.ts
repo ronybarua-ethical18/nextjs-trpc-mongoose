@@ -133,6 +133,8 @@ export const authOptions: AuthOptions = {
         firstName: (token.firstName as string) || token.name || '',
         lastName: (token.lastName as string) || '',
       };
+      console.log(token);
+
       return session;
     },
   },
