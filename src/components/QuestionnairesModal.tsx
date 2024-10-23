@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 
 type questionariesModalProps = {
   isOpen: boolean | undefined;
-  setIsOpen: (status: boolean) => boolean;
+  setIsOpen: (status: boolean) => void;
 };
 
 type SelectedAnswer = {
