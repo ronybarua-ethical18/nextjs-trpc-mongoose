@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import QuestionnairesModal from '@/components/QuestionnairesModal';
 import { useSession, signOut } from 'next-auth/react';
 import React from 'react';
 import { FaCheckCircle, FaUser, FaEnvelope } from 'react-icons/fa'; // Import icons from react-icons
@@ -18,7 +17,6 @@ const UserProfilePage: React.FC = () => {
 
   return (
     <>
-      <QuestionnairesModal isOpen={true} />
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="bg-white shadow-lg rounded-lg p-8 w-1/3  text-center">
           {/* Congrats Message */}

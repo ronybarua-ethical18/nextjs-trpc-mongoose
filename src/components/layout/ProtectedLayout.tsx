@@ -1,13 +1,31 @@
+'use client';
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react'; // Import session hook
 import Search from '../Search';
 import ProfileDropdown from '../Dropdown';
 import Sidebar from '../Sidebar';
 import MobileNav from '../MobileNav';
+import { useRouter } from 'next/navigation';
 
-export default function ProtectedLayout({
-  children,
-}: {
+interface ProtectedLayoutProps {
   children: React.ReactNode;
-}) {
+}
+
+export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
+  const { status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'loading') return; // Prevent redirect while session is loading
+    if (status !== 'authenticated') {
+      router.push('/login'); // Redirect to login if no user found
+    }
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return <p>Loading...</p>; // Optional loading state
+  }
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <Sidebar role="customer" />

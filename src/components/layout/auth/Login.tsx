@@ -13,14 +13,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { data: session } = useSession();
+  const { status } = useSession(); // Track session loading state
   const router = useRouter();
-
-  //console.log("logged user", session);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Sign in using next-auth credentials provider
     const result = await signIn('credentials', {
       redirect: false,
       email,
@@ -28,26 +25,26 @@ export default function Login() {
     });
 
     if (result?.error) {
-      console.log('something went wrong with login');
-      toast.error(result?.error, {
-        duration: 4000, // Duration in milliseconds
-      });
+      toast.error(result.error, { duration: 4000 });
     } else {
-      // router.push('/dashboard'); // Redirect to dashboard or another page after successful login
-      toast.success('Login Successful', {
-        duration: 2000, // Duration in milliseconds
-      });
+      toast.success('Login Successful', { duration: 2000 });
+      router.push('/customer/dashboard'); // Redirect after successful login
     }
   };
 
   useEffect(() => {
-    if (session?.user) {
-      router.push('/customer/dashboard');
+    if (status === 'authenticated') {
+      router.push('/customer/dashboard'); // Redirect if already authenticated
     }
-  }, [router, session]);
+  }, [status, router]);
+
+  if (status === 'loading') {
+    // Optional: Loading state until session is verified
+    return <p>Loading...</p>;
+  }
 
   return (
-    <div className="flex items-center text-black  justify-center h-screen bg-gray-100">
+    <div className="flex items-center text-black justify-center h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 text-center bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h2 className="text-[28px] font-semibold">Welcome Back</h2>
@@ -55,7 +52,6 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Input */}
           <div>
             <label htmlFor="email" className="sr-only">
               Email
@@ -70,7 +66,6 @@ export default function Login() {
               required
             />
           </div>
-          {/* Password Input */}
           <div>
             <label htmlFor="password" className="sr-only">
               Password
@@ -85,16 +80,15 @@ export default function Login() {
               required
             />
           </div>
-
-          {/* Sign In Button */}
           <Button type="submit" className="w-full text-white">
             Sign In
           </Button>
         </form>
+
         <div className="flex justify-between text-[#71717A]">
           <div className="flex items-center space-x-2">
-            <Checkbox id="remember" className=" " />
-            <label htmlFor="remember" className="text-sm font-medium ">
+            <Checkbox id="remember" />
+            <label htmlFor="remember" className="text-sm font-medium">
               Remember me
             </label>
           </div>
@@ -102,14 +96,13 @@ export default function Login() {
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="border-t w-full   inline-block"></span>
+          <span className="border-t w-full inline-block"></span>
           <span className="px-4 min-w-[145px] text-gray-500">
             or continue with
           </span>
           <span className="border-t w-full inline-block"></span>
         </div>
 
-        {/* Google Sign In Button */}
         <Button
           variant="outline"
           onClick={() => signIn('google')}
