@@ -1,17 +1,20 @@
 'use client';
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react'; // Import session hook
-import Search from '../Search';
-import ProfileDropdown from '../Dropdown';
+// import Search from '../Search';
+// import ProfileDropdown from '../Dropdown';
 import Sidebar from '../Sidebar';
-import MobileNav from '../MobileNav';
+// import MobileNav from '../MobileNav';
 import { useRouter } from 'next/navigation';
+import DashboardItem1 from './DashboardItem1';
+import ExpenseIcons from './ExpenseIcons';
+import DashboardItem2 from './DashboardItem2';
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
 }
 
-export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
+export default function ProtectedLayout({}: ProtectedLayoutProps) {
   const { status } = useSession();
   const router = useRouter();
 
@@ -27,20 +30,17 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
   }
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <Sidebar role="customer" />
-      <div className="flex flex-col h-screen">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
-          <MobileNav />
-          <div className="w-full flex-1">
-            <Search />
-          </div>
-          <ProfileDropdown />
-        </header>
-        <main className="flex-1 overflow-y-auto p-4 lg:gap-6 lg:p-6">
-          {children}
-        </main>
+    <div className="flex mx-[128px] bg-[var(--select-box,#EEF0F4)]">
+      <div className="flex flex-col justify-between items-center w-[270px] h-[812px] p-[48px] pt-[48px] pb-[16px] rounded-b-[16px] border border-[#EEF0F4] bg-white">
+        <Sidebar role="customer" />
       </div>
+      <div className="pl-[8px] pt-[32px]">
+        <DashboardItem1 />
+      </div>
+      <div className="pt-[32px]">
+        <DashboardItem2 />
+      </div>
+      <ExpenseIcons />
     </div>
   );
 }
