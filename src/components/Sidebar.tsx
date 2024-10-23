@@ -3,11 +3,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FiMenu } from 'react-icons/fi'; // Import a menu icon
 
+// Define the type for a menu item
+
+// Define the type for menuConfig based on roles
+
 interface SidebarProps {
   role: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ role }) => {
+const Sidebar: React.FC<SidebarProps> = ({}) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to toggle sidebar visibility
 
   const toggleSidebar = () => {
@@ -83,25 +87,24 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
               height={20}
               className="object-contain shrink-0 self-stretch my-auto"
             />
+
             <div className="flex-1">Categories</div>
           </Link>
 
-          {/* Conditionally render 'Rule' section based on the role */}
-          {role === 'admin' && (
-            <Link
-              href="/rule"
-              className="flex gap-2 items-center px-2 py-1.5 mt-2 w-full whitespace-nowrap bg-white rounded-lg text-stone-950"
-            >
-              <Image
-                src="/Rule.png"
-                alt="Rule Icon"
-                width={20}
-                height={20}
-                className="object-contain shrink-0 self-stretch my-auto"
-              />
-              <span className="flex-1">Rule</span>
-            </Link>
-          )}
+          {/* Rule Section */}
+          <Link
+            href="/rule"
+            className="flex gap-2 items-center px-2 py-1.5 mt-2 w-full whitespace-nowrap bg-white rounded-lg text-stone-950"
+          >
+            <Image
+              src="/Rule.png"
+              alt="Rule Icon"
+              width={20}
+              height={20}
+              className="object-contain shrink-0 self-stretch my-auto"
+            />
+            <span className="flex-1">Rule</span>
+          </Link>
 
           {/* Deductions Section */}
           <Link
@@ -125,7 +128,35 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
             />
           </Link>
 
-          {/* Other sections... */}
+          {/* Tax File Section */}
+          <Link
+            href="/tax-file"
+            className="flex gap-2 items-center p-2 mt-2 w-full bg-white rounded-lg min-h-[36px] text-stone-950"
+          >
+            <Image
+              src="/TaxFile.png"
+              alt="Tax File Icon"
+              width={20}
+              height={20}
+              className="object-contain shrink-0 self-stretch my-auto"
+            />
+            <span className="flex-1">Tax file</span>
+          </Link>
+
+          {/* Write-offs Section */}
+          <Link
+            href="/write-offs"
+            className="flex gap-2 items-center p-2 mt-2 w-full whitespace-nowrap bg-white rounded-lg min-h-[36px] text-stone-950"
+          >
+            <Image
+              src="/WriteOff.png"
+              alt="Write-offs Icon"
+              width={20}
+              height={20}
+              className="object-contain shrink-0 self-stretch my-auto"
+            />
+            <span className="flex-1">Write-offs</span>
+          </Link>
         </div>
 
         {/* Help Section */}
