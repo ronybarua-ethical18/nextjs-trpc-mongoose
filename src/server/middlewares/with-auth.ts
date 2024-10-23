@@ -14,7 +14,6 @@ type Context = {
 
 const withAuth = middleware(async ({ ctx, next }) => {
   const contextWithSession = ctx as Context;
-  console.log(contextWithSession);
 
   if (!contextWithSession.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });

@@ -41,6 +41,8 @@ export default function Login() {
     }
   }, [status, router]);
 
+  console.log('session status', status);
+
   return (
     <div className="flex items-center text-black justify-center h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 text-center bg-white rounded-lg shadow-md">
