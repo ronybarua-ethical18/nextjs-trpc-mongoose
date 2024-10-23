@@ -29,13 +29,8 @@ const UserSchema: Schema = new Schema<IUser>(
 
     questionnaires: [
       {
-        category: { type: String, required: true },
-        questions: [
-          {
-            question: { type: String, required: true },
-            isSelected: { type: Boolean, default: false },
-          },
-        ],
+        question: { type: String, required: true },
+        answers: [String],
       },
     ],
     isVerified: {
