@@ -13,7 +13,8 @@ import { Loader2 } from 'lucide-react';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { status } = useSession(); // Track session state
+  const { data: user, status } = useSession(); // Track session state
+
   const [loading, setLoading] = useState(false); // Local loading state
   const router = useRouter();
 
@@ -29,19 +30,16 @@ export default function Login() {
     if (result?.error) {
       toast.error(result.error, { duration: 4000 });
     } else {
-      toast.success('Login Successful', { duration: 2000 });
-      router.push('/customer/dashboard'); // Redirect after successful login
+      toast.success('Login Successful', { duration: 1000 });
     }
     setLoading(false); // Stop loader
   };
 
   useEffect(() => {
     if (status === 'authenticated') {
-      router.push('/customer/dashboard'); // Redirect if already authenticated
+      router.push(`/${user?.user.role}/dashboard`); // Redirect if already authenticated
     }
-  }, [status, router]);
-
-  console.log('session status', status);
+  }, [status, router, user]);
 
   return (
     <div className="flex items-center text-black justify-center h-screen bg-gray-100">

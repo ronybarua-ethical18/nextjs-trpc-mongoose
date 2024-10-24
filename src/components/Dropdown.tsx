@@ -10,6 +10,7 @@ import {
 import { Button } from './ui/button';
 import Avatar from '../../public/images/user_avatar.png';
 import Image from 'next/image';
+import { signOut } from 'next-auth/react';
 
 function ProfileDropdown() {
   return (
@@ -32,7 +33,9 @@ function ProfileDropdown() {
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
+          Logout
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

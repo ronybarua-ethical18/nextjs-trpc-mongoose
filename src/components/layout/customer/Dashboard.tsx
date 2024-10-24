@@ -12,6 +12,7 @@ function CustomerDashboard() {
       setOpen(user.questionnaires.length === 0);
     }
   }, [isLoading, user]);
+  console.log('user__', user);
 
   return (
     <ProtectedLayout>

@@ -18,10 +18,12 @@ export const userRouter = router({
 
   getUserById: protectedProcedure.query(async ({ ctx }) => {
     const sessionUser = ctx.user as JwtPayload;
-    if (!sessionUser || !sessionUser?.id) {
+
+    if (!sessionUser || !sessionUser?.email) {
       throw new Error('You must be logged in to access this data.');
     }
-    const user = await User.findById(sessionUser.id);
+    const user = await User.findOne({ email: sessionUser.email });
+
     if (!user) {
       throw new Error('User not found');
     }
@@ -32,15 +34,14 @@ export const userRouter = router({
     .input(userValidation.userSchema)
     .mutation(async ({ ctx, input }) => {
       const { questionnaires } = input;
-      console.log('__input', input);
 
       const sessionUser = ctx.user as JwtPayload;
-      if (!sessionUser || !sessionUser?.id) {
+      if (!sessionUser || !sessionUser?.email) {
         throw new Error('You must be logged in to update this data.');
       }
 
-      const user = await User.findByIdAndUpdate(
-        sessionUser.id,
+      const user = await User.findOneAndUpdate(
+        { email: sessionUser.email },
         { questionnaires: questionnaires },
         { new: true } // This option returns the updated document
       );
@@ -48,7 +49,6 @@ export const userRouter = router({
       if (!user) {
         throw new Error('User not found');
       }
-      console.log('updatedUser__', user);
 
       return user;
     }),

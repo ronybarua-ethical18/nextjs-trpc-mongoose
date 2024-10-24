@@ -22,7 +22,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 // import { ModeToggle } from "@/components/ui/mode-toggle";
 // import AdminSearch from "@/components/features/admin-search";
-import Search from './Search';
+import Search from './SearchInput';
 import { UpgradeCard } from './UpgradedCard';
 
 const Header = () => (
