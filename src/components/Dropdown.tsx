@@ -8,14 +8,21 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from './ui/button';
-import { CircleUser } from 'lucide-react';
+import Avatar from '../../public/images/user_avatar.png';
+import Image from 'next/image';
 
 function ProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="secondary" size="icon" className="rounded-full">
-          <CircleUser className="h-5 w-5" />
+        <Button size="icon" className="rounded-full">
+          <Image
+            src={Avatar}
+            height={38}
+            width={38}
+            alt="User_Logo"
+            className="rounded-full"
+          />
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </DropdownMenuTrigger>
